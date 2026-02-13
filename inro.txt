@@ -1,0 +1,20 @@
+What is API?
+API is connector which connect backend and frontend.
+example: customer <-> waiter <-> kitchen
+waiter is api in this case
+
+FastAPI:
+It is modern high performance web framework for building APIs with Python.
+
+It is built on starlette and pydantic which are Python Liabraries.
+
+api recive http request from client and perform some process on this request, and in return genrate respose in http in this starlette do this
+
+pydantic is used to check if the data coming into your API is correct and in the right format.
+
+Philosopy of FastAPI:
+1) Old freameworks are slow, in this api run fast
+2) Need to write to much code, in this fast to code
+
+
+
