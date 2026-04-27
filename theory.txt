@@ -18,8 +18,23 @@ Philosopy of FastAPI:
 
 HTTP Methods
 Softwares Types:
-    1) Static - Calander
+    1) Static - Calander, Clock (user interaction is less)
     2) Dynamic - interaction with user two way communacation (fb)
 
+Types of interaction:
+We can only do 4 times of interaction with dyanamic softwares and for that opearation new term is coined which is "crud"
+    1) C = Create (POST)
+    2) R = Retrive (GET)
+    3) U = Update (PUT)
+    4) D = Delete (DELETE)
 
+Website are also a type of software but in case of website software is installed on differnt machine(server) and used on other machine(client)
+This is like a two way communication between client and server and this entire communication is done through a protocol known as HTTP.
 
+In website also we have static(blog,goverment websites) and dyanamic(instagram,X) 
+
+HTTP Methods Types:
+    1) POST
+    2) GET
+    3) PUT
+    4) DELETE
