@@ -16,5 +16,10 @@ Philosopy of FastAPI:
 1) Old freameworks are slow, in this api run fast
 2) Need to write to much code, in this fast to code
 
+HTTP Methods
+Softwares Types:
+    1) Static - Calander
+    2) Dynamic - interaction with user two way communacation (fb)
+
 
 
