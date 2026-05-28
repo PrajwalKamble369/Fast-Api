@@ -53,3 +53,61 @@ ge, gt, le, lt
 Min_length
 Max_length
 regex
+
+HTTP Status Code:
+They are 3 digits numbers return by a web server (like FastAPI) to indicate
+result of a client request (like from a browerser or API consumer)
+
+            
+____________                           _____________
+|          |         request           |           |
+| Client   |  --------------------->   |  Server   |
+|__________|  <---------------------   |___________|
+                    respose
+
+They help the client(browser,frontend,mobile app etc) understand:
+ 1) whether the request was successful
+ 2) whether something went wrong
+ 3) and what kind of issue occure (if any)
+
+
+ ___________________________________________________________________________________________
+ | 2xx   ---> | Success        ---> | The request was successfully received and processed  |
+ | 3xx   ---> | Redirection    ---> | Further action needs to be taken (e.g. redirect)     |
+ | 4xx   ---> | Client Error   ---> | Something is wrong with the request from the client  |
+ | 5xx   ---> | Server Error   ---> | Something went wrong on the server side              |
+ |____________|_____________________|______________________________________________________|
+
+
+__________________________________________________________________________________________
+| 200 OK          |   Standard Success             |   A GET or POST succeeded            |
+| 201 Created     |   Resource Created             |  After a POST that creates something |
+| 204 No Content  |   Success but no data returned |  After a DELETE request              |
+|_________________|________________________________|______________________________________|
+
+HTTPException:
+   HTTPException is special built in exception is FastAPI used to return custom HTTP error responses when something goes wrong.
+   Insted of returning normal JSON or crashing the server, you can gracefully raise an error with:
+    * a proper HTTP status code (like 404,400,403,etc)
+    * a custom error message
+    * (optinal) extra headers
+
+
+Query Parameter:
+    Query parameters are optinal key-valye pairs appended to the end of a URL,.
+    used to pass additional data to the server in an HTTP request. They are typically
+    employed for opearations like filtering, sorting, searching and pagination without
+    altering the endpoint path itself
+
+    /patients?city=Delhi&sort_by=age
+
+        * The ? marks the start if query parameters.
+        * Each parameter is a key-value pair: key=pair
+        * Multiple parameters are seprated by &
+    In this case
+        * city=Delhi is query parameter for filtering
+        * sort_by=age is query parameter for sorting
+
+    Query() is a utility function provided by FastAPI to declare,validate,
+    and document query parameters in your API endpoints.
+    
