@@ -38,3 +38,9 @@ HTTP Methods Types:
     2) GET
     3) PUT
     4) DELETE
+
+Path Parameter:
+Path parameters are dynamic segment of a URL used to identify a specific resource.
+example : in our project localhost8000/view -----> return all patients
+but localhost8000/view/8  ----> return specific patient and this /8 is dyanamic this is path paramete.
+
