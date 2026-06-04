@@ -54,7 +54,7 @@ def update_patient_data(name:str,age:int ):  # this is type hinting
 # absolute solution
 
 # step one pydantic model
-from pydantic import BaseModel, EmailStr, AnyUrl,Field
+from pydantic import BaseModel, EmailStr, AnyUrl,Field,field_validator,model_validator,computed_field
 from typing import List, Dict, Optional, Annotated
 
 class Patient(BaseModel):
@@ -64,10 +64,40 @@ class Patient(BaseModel):
     likedin : AnyUrl
     age: int = Field(gt=0, lt=120)
     weight: Annotated[float, Field(gt=0,strict=True)]
+    heigth : Annotated[float, Field(gt=0,strict=True)]
     married : Annotated[Optional[bool],Field(default=None,description="Patient Married?")] # optional
     alergies : List[str] = Field(max_length=5) # two level validation
     contact_detail : Dict[str, str]
 
+    # field validator
+    @field_validator("email")
+    @classmethod
+    def email_validator(cls,value):
+        valid_domadins = ["hdfc.com","union.com"]
+        domian_name = value.split("@")[-1]
+        if domian_name not in valid_domadins:
+            raise ValueError("Not a valid domain")
+        return value
+    
+    @field_validator("name")
+    @classmethod
+    def transform_name(cls,value):
+        return value.upper()
+    
+    # model validator
+    @model_validator(mode="after")
+    def validate_emergency_contact(self):
+        if self.age > 60 and "emergency" not in self.contact_detail:
+            raise ValueError("Patients older than 60 must have emergency contact")
+        return self
+
+    # computed field
+    @computed_field
+    @property
+    def bmi(self) -> float:
+        bmi = round(self.weight / (self.heigth**2),2)
+        return bmi
+    
 
 # step 3 pass to function
 def insert_patient(patient:Patient):
@@ -76,20 +106,21 @@ def insert_patient(patient:Patient):
     print("Inserted")
 
 def update_patient(patient:Patient):
-    print(patient.name,patient.age,patient.married)
+    print(patient.name,patient.age,patient.married,patient.bmi)
     print("Update")
 
 
 patient_info = {
                 "name":"Prajwal",
-                "email":"abc@gmail.com", 
+                "email":"abc@hdfc.com", 
                 "likedin":"http://linkedint.com/12132",
-                "age": 30,
+                "age": 60,
                 "weight":87,
-                
+                "heigth":1.72,
                 "alergies":["dust","yogurt"],
-                "contact_detail":{"phone":"146641468613"}
-                }
+                "contact_detail":{"phone":"146641468613","emergency":"14678653"}
+                 }
+
 # step 2 object of pydantic moadel
 patient1 = Patient(**patient_info)
 insert_patient(patient1)
