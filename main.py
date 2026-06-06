@@ -1,7 +1,39 @@
 from fastapi import FastAPI, Path, HTTPException, Query
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel,Field,computed_field
+from typing import Annotated, Literal
 import json
 
 app = FastAPI()
+
+# pydyantic model
+class Patient(BaseModel):
+    id : Annotated[str,Field(...,description="ID of Patient",examples=["P001"])]
+    name : Annotated[str,Field(...,description="Name of Patient",examples=["FirstName LastName"])]
+    city : Annotated[str,Field(...,description="Enter city of Patient",examples=["Mumbai"])]
+    age : Annotated[int,Field(...,gt=0,lt=120,description="Age of Patient",examples=[12])]
+    gender : Annotated[Literal["male","female","others"],Field(...,description="gender of patient")]
+    height : Annotated[float,Field(...,gt=0,description="height of patient in kgs")]
+    weight : Annotated[float,Field(...,gt=0,description="weight of patient in meters")]
+
+    @computed_field
+    @property
+    def bmi(self) -> float:
+        bmi = round(self.weight / (self.height**2),2)
+        return bmi
+
+    @computed_field
+    @property
+    def verdict(self) -> str:
+        if self.bmi < 18.5:
+            return "underweight"
+        elif self.bmi < 25:
+            return "Normal"
+        elif self.bmi < 30:
+            return "Normal"
+        else:
+            return "Obese"
+
 
 # function to load data
 def load_data():
@@ -10,6 +42,10 @@ def load_data():
     
     return data
 
+# utility function
+def save_data(data):
+    with open("patient.json","w") as f:
+        json.dump(data,f)
 
 # end point for home page
 @app.get("/")
@@ -53,5 +89,26 @@ def sort_patients(sort_by:str=Query(...,description="Sort on the basis of height
     sorted_data = sorted(data.values(),key=lambda x: x.get(sort_by,0),reverse=sort_order)
 
     return sorted_data
+
+# end point to create(post request)
+@app.post("/create")
+def create_patient(patient:Patient):
+    # load existing data
+    data = load_data()
+
+    # check if the patient alreay exist
+    if patient.id in data:
+        raise HTTPException(status_code=400,detail="Patient Already Exsist")
+
+    # new patient add to datbase
+    data[patient.id] = patient.model_dump(exclude=["id"])
+
+    # save into json file
+    save_data(data)
+    return JSONResponse(status_code=201,content={"message":"patient created successfully"})
+
+
+
+
 
     
