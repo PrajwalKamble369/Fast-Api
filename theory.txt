@@ -127,3 +127,16 @@ Why Pydantic:
     3) Pass the validated model object to functions or use it throughout your code base
         *️⃣ This ensure that every part of your program works with clean, type-safe and
         logically valid data.
+
+*️⃣ POST Request
+    *️⃣ Steps
+        1)  ____________                           _____________
+            |          |         request           |           |
+            | Client   |  --------------------->   |  Server   |
+            |__________|  <---------------------   |___________|
+                                respose
+                                  JSON    
+                                request body
+
+        2) Valdidate Data using pydantic model
+        3) JSON File -> new record added
