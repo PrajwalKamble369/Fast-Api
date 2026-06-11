@@ -35,13 +35,15 @@ class Patient(BaseModel):
             return "Obese"
         
 class PatientsUpdate(BaseModel):
-    name : Annotated[Optional[str],Field(...,description="Name of Patient",examples=["FirstName LastName"])]
-    city : Annotated[Optional[str],Field(...,description="Enter city of Patient",examples=["Mumbai"])]
-    age : Annotated[Optional[int],Field(...,gt=0,lt=120,description="Age of Patient",examples=[12])]
-    gender : Annotated[Optional[Literal["male","female","others"]],Field(...,description="gender of patient")]
-    height : Annotated[Optional[float],Field(...,gt=0,description="height of patient in kgs")]
-    weight : Annotated[Optional[float],Field(...,gt=0,description="weight of patient in meters")]
-
+    name: Annotated[Optional[str], Field(None, description="Name")]
+    city: Annotated[Optional[str], Field(None, description="City")]
+    age: Annotated[Optional[int], Field(None, gt=0, lt=120)]
+    gender: Annotated[
+        Optional[Literal["male","female","others"]],
+        Field(None)
+    ]
+    height: Annotated[Optional[float], Field(None, gt=0)]
+    weight: Annotated[Optional[float], Field(None, gt=0)]
 
 
 # function to load data
@@ -138,11 +140,18 @@ def update_patient(patient_id:str,patient_update:PatientsUpdate):
     # save data
     save_data(data)
 
-
-
+    return JSONResponse(status_code=200,content={"message":"patient updated"})
 
 # end point for delete
-
+@app.delete("/delete/{patient_id}")
+def delete_patient(patient_id:str):
+    # load data 
+    data = load_data()
+    if patient_id not in data:
+        raise HTTPException(status_code=404,detail="Patient Not Found")
+    del data[patient_id]
+    save_data(data)
+    return JSONResponse(status_code= 200, content={"message":"patient deleted"})
 
 
     
