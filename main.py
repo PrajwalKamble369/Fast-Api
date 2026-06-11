@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Path, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel,Field,computed_field
-from typing import Annotated, Literal
+from typing import Annotated, Literal,Optional
 import json
 
 app = FastAPI()
@@ -33,6 +33,15 @@ class Patient(BaseModel):
             return "Normal"
         else:
             return "Obese"
+        
+class PatientsUpdate(BaseModel):
+    name : Annotated[Optional[str],Field(...,description="Name of Patient",examples=["FirstName LastName"])]
+    city : Annotated[Optional[str],Field(...,description="Enter city of Patient",examples=["Mumbai"])]
+    age : Annotated[Optional[int],Field(...,gt=0,lt=120,description="Age of Patient",examples=[12])]
+    gender : Annotated[Optional[Literal["male","female","others"]],Field(...,description="gender of patient")]
+    height : Annotated[Optional[float],Field(...,gt=0,description="height of patient in kgs")]
+    weight : Annotated[Optional[float],Field(...,gt=0,description="weight of patient in meters")]
+
 
 
 # function to load data
@@ -107,7 +116,32 @@ def create_patient(patient:Patient):
     save_data(data)
     return JSONResponse(status_code=201,content={"message":"patient created successfully"})
 
+# end point for update (edit)
+@app.put("/edit/{patient_id}")
+def update_patient(patient_id:str,patient_update:PatientsUpdate):
+    data = load_data()
+    if patient_id not in data:
+        raise HTTPException(status_code=404, detail="Patient Not Found")
+    existing_patient_info = data[patient_id]
+    updated_patient_info = patient_update.model_dump(exclude_unset=True)
+    for key, value in updated_patient_info.items():
+        existing_patient_info[key] = value
+    
+    #existing_patient_info -> pydantic object -> update bmi + verdict
+    existing_patient_info["id"] = patient_id
+    patient_pydantic_object = Patient(**existing_patient_info)
+     #-> pydantic object -> dict
+    existing_patient_info =patient_pydantic_object.model_dump(exclude="id")
+    # add this dict to daata
+    data[patient_id] = existing_patient_info
 
+    # save data
+    save_data(data)
+
+
+
+
+# end point for delete
 
 
 
