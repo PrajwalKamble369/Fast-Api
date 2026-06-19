@@ -91,7 +91,7 @@ def sort_patients(sort_by:str=Query(...,description="Sort on the basis of height
     if sort_by not in valid_field:
         raise HTTPException(status_code=400,detail=f"Invalid Field select from {valid_field}")
     if order not in ["asc","desc"]:
-        raise HTTPException(status_code=400,detail=f"Invalid order select from {["asc","desc"]}")
+        raise HTTPException(status_code=400,detail="Invalid order select from ['asc','desc']")
     
     data = load_data()
 
