@@ -2,6 +2,7 @@
 venv/
 .env/
 .venv/
+fastapi_venv/
 
 # Python cache
 __pycache__/
