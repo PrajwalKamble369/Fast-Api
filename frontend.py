@@ -9,6 +9,7 @@ age = st.number_input(
     "Age",
     min_value=1,
     max_value=119,
+    
     value=30
 )
 
